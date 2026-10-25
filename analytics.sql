@@ -1,0 +1,43 @@
+-- 1. Overall business KPIs
+SELECT
+    COUNT(*) AS order_count,
+    SUM(quantity) AS units_sold,
+    ROUND(SUM(total_amount), 2) AS total_revenue,
+    ROUND(AVG(total_amount), 2) AS average_order_value
+FROM sales;
+
+-- 2. Revenue by month
+SELECT
+    DATE_TRUNC('month', order_date)::date AS sales_month,
+    ROUND(SUM(total_amount), 2) AS revenue,
+    COUNT(*) AS orders
+FROM sales
+GROUP BY 1
+ORDER BY 1;
+
+-- 3. Best-performing products
+SELECT
+    product,
+    SUM(quantity) AS units_sold,
+    ROUND(SUM(total_amount), 2) AS revenue
+FROM sales
+GROUP BY product
+ORDER BY revenue DESC;
+
+-- 4. Top customers by revenue
+SELECT
+    customer_id,
+    COUNT(*) AS order_count,
+    ROUND(SUM(total_amount), 2) AS revenue
+FROM sales
+GROUP BY customer_id
+ORDER BY revenue DESC
+LIMIT 10;
+
+-- 5. Daily revenue trend
+SELECT
+    order_date,
+    ROUND(SUM(total_amount), 2) AS revenue
+FROM sales
+GROUP BY order_date
+ORDER BY order_date;
